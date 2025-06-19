@@ -1,6 +1,9 @@
 # Kafka UI BSON SerDe
 
-This project provides a BSON (Binary JSON) serializer/deserializer for Kafka UI.
+This project provides a BSON (Binary JSON) serializer/deserializer for Kafka UI. 
+
+Follows the
+https://docs.kafka-ui.provectus.io/configuration/serialization-serde#custom-pluggable-serde-registration instructions.
 
 ## Quick Start
 

@@ -39,5 +39,5 @@ run-custom: build
 	  -e SERDE_PACKAGES_PATH=/kafka-ui-serde/ \
 	  -e spring.config.additional-location=/etc/kafkaui/config.yml \
 	  -v $$(pwd)/target/kafkaui-bson-serde-1.0-SNAPSHOT.jar:/kafka-ui-serde/kafkaui-bson-serde-1.0-SNAPSHOT.jar \
-	  -v $$(pwd)/config.sample.yml:/etc/kafkaui/config.yml \
+	  -v $$(pwd)/config.yml:/etc/kafkaui/config.yml \
 	  provectuslabs/kafka-ui:latest

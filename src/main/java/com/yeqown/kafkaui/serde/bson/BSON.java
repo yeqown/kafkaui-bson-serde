@@ -30,6 +30,11 @@ public class BSON implements Serde {
                 .outputMode(JsonMode.RELAXED)
                 .build();
 
+    private static final CodecRegistry CODEC_REGISTRY = CodecRegistries.fromRegistries(
+            com.mongodb.MongoClientSettings.getDefaultCodecRegistry()
+    );
+    private static final org.bson.codecs.DocumentCodec DOCUMENT_CODEC = new org.bson.codecs.DocumentCodec(CODEC_REGISTRY);
+
     @Override
     public void configure(PropertyResolver serdeProperties, PropertyResolver kafkaClusterProperties, PropertyResolver globalProperties) {
         // No configuration needed
@@ -69,12 +74,6 @@ public class BSON implements Serde {
     }
 
     private static class BsonSerializer implements Serializer {
-        // 提取 CodecRegistry 和 DocumentCodec 的创建逻辑
-        private static final CodecRegistry CODEC_REGISTRY = CodecRegistries.fromRegistries(
-                com.mongodb.MongoClientSettings.getDefaultCodecRegistry()
-        );
-        private static final org.bson.codecs.DocumentCodec DOCUMENT_CODEC = new org.bson.codecs.DocumentCodec(CODEC_REGISTRY);
-
         @Override
         public byte[] serialize(String input) {
             if (input == null || input.trim().isEmpty()) {
@@ -82,14 +81,10 @@ public class BSON implements Serde {
             }
 
             try {
-                // Parse the input JSON string into a Document object
                 Document document = Document.parse(input);
-
-                // Serialize the Document object to BSON binary
                 org.bson.io.BasicOutputBuffer output = new org.bson.io.BasicOutputBuffer();
                 try (org.bson.BsonBinaryWriter writer = new org.bson.BsonBinaryWriter(output)) {
                     DOCUMENT_CODEC.encode(writer, document, org.bson.codecs.EncoderContext.builder().build());
-                    // Flush the writer to ensure all data is written to the buffer
                     writer.flush();
                 }
                 return output.toByteArray();
@@ -101,13 +96,6 @@ public class BSON implements Serde {
     }
 
     private static class BsonDeserializer implements Deserializer {
-        // Create a BSON document codec registry
-        private static final CodecRegistry CODEC_REGISTRY = CodecRegistries.fromRegistries(
-                com.mongodb.MongoClientSettings.getDefaultCodecRegistry()
-        );
-
-        private static final DocumentCodec DOCUMENT_CODEC = new DocumentCodec(CODEC_REGISTRY);
-
         @Override
         public DeserializeResult deserialize(RecordHeaders headers, byte[] data) {
             if (data == null || data.length == 0) {
@@ -115,21 +103,11 @@ public class BSON implements Serde {
             }
 
             try {
-                // Create a ByteBuffer from the byte array
                 java.nio.ByteBuffer byteBuffer = java.nio.ByteBuffer.wrap(data);
-
-                // Create a BsonBinaryReader
                 org.bson.BsonBinaryReader reader = new org.bson.BsonBinaryReader(byteBuffer);
-
-                // Decode the BSON binary data into a Document object
                 Document document = DOCUMENT_CODEC.decode(reader, org.bson.codecs.DecoderContext.builder().build());
-
-                // Convert the Document object to a JSON string
                 String json = document.toJson(JSON_WRITER_SETTINGS);
-
-                // Close the reader
                 reader.close();
-
                 return new DeserializeResult(json, DeserializeResult.Type.STRING, Collections.emptyMap());
             } catch (Exception e) {
                 LOG.error("Failed to deserialize BSON data", e);
