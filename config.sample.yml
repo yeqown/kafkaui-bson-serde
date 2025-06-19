@@ -1,0 +1,10 @@
+kafka:
+  clusters:
+    - name: local-cluster
+      bootstrapServers: wl-local01-kafka01-1.offline-ops.net:9092,wl-local01-kafka01-2.offline-ops.net:9092,wl-local01-kafka01-3.offline-ops.net:9092
+      serde:
+        - name: BSON
+          className: com.yeqown.kafkaui.serde.bson.BSON
+          filePath: /kafka-ui-serde/kafkaui-bson-serde-1.0-SNAPSHOT.jar
+          topicKeysPattern: ".*"
+          topicValuesPattern: "gamelog.*"
