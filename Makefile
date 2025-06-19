@@ -7,7 +7,6 @@ help:
 	@echo "  make clean       - Clean build artifacts"
 	@echo "  make run-custom  - Run with custom broker configuration (wl-local01-kafka01) using Podman"
 	@echo "  make test        - Run test script to generate sample BSON document"
-	@echo "  make test-serde  - Run test script to test BSON serialization and deserialization"
 	@echo "  make help        - Show this help message"
 
 # Build the JAR file
