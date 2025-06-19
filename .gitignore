@@ -43,3 +43,6 @@ buildNumber.properties
 
 # OS specific
 .DS_Store
+
+# Configuration files
+config.sample.yml
