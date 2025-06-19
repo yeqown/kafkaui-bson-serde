@@ -41,7 +41,7 @@ kafka:
       bootstrapServers: localhost:9092
       serde:
         - name: BSON
-          className: com.yeqown.kafkaui.serde.bson.BsonSerde
+          className: com.yeqown.kafkaui.serde.bson.BSON
           filePath: /kafka-ui-serde/kafkaui-bson-serde-1.0-SNAPSHOT.jar
           topicKeysPattern: ".*"
           topicValuesPattern: ".*"
